@@ -77,8 +77,7 @@ def zhangsuen(img):
 	# black = 1, white = 0
 	shape = img.shape
 	step = 1;
-	changed = True
-	
+
 	# optimization step
 	check_pixels = set()
 	for row in range(1, shape[0] - 1):
@@ -89,7 +88,10 @@ def zhangsuen(img):
 		if step == 1:
 			new_pixels = set()
 
-		for pixel in check_pixels:
+		order = list(check_pixels)
+		order.sort(key=lambda x: x[0])
+		order.sort(key=lambda x: x[1])
+		for pixel in order:
 			row, col = pixel
 
 			if row < 1 or row > shape[0] - 2:
@@ -144,8 +146,34 @@ def zhangsuen(img):
 
 	return img
 
+# uses vector things to try to find the beginning and end in the maze
+# assumes that there is a gap to the outside when running this
+def find_ends(img):
+	THRESHOLD = 10
+	height, width = img.shape
 
-for name in names[:1]:
+	# search in 5 pixel chunks, top and bottom
+	depths = []
+	depths2 = []
+	for i in range(width / 5):
+		total = 0
+		total2 = 0
+		for j in range(5):
+			for k in range(height):
+				if img[k, i*5+j]:
+					total += k
+					break
+			for k in reversed(range(height)):
+				if img[k, i*5+j]:
+					total2 += k
+					break
+		depths.append(total)
+		depths2.append(total2)
+
+	return depths, depths2
+
+
+for name in names:
 	img = cv2.imread(name, cv2.IMREAD_GRAYSCALE)
 	img_copy = img.copy()
 
@@ -175,8 +203,7 @@ for name in names[:1]:
 
 	# now process the cropped_img
 	t0 = time.time()
-	z = zhangsuen(cropped_img.copy())
-	#img_set = get_image_set(cropped_img)
+	z = zhangsuen(cropped_img)
 	print time.time() - t0
 	#import pdb; pdb.set_trace()
 
