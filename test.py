@@ -7,7 +7,7 @@ import time
 
 
 names = ['0', '1.jpg', '2.jpg', '3.png', '4.jpg', '5.png']
-names = ['noisy_images/noise{}.jpg'.format(i) for i in range(6)]
+names = ['noisy_images/noise{}.png'.format(i) for i in range(6)]
 '''
 names = ['0.png', '1.jpg', '2.jpg', '3.png', '4.jpg', '5.png']
 names = ['images/maze' + name for name in names]
@@ -101,49 +101,9 @@ def zhangsuen(img):
 
 	return img
 
-# uses vector things to try to find the beginning and end in the maze
-# assumes that there is a gap to the outside when running this
-def find_ends(img):
-	THRESHOLD = 10
-	height, width = img.shape
-
-	# search in 5 pixel chunks, top and bottom
-	depths = []
-	depths2 = []
-	for i in range(width / 5):
-		total = 0
-		total2 = 0
-		for j in range(5):
-			for k in range(height):
-				if img[k, i*5+j]:
-					total += k
-					break
-			for k in reversed(range(height)):
-				if img[k, i*5+j]:
-					total2 += k
-					break
-		depths.append(total)
-		depths2.append(total2)
-
-	return depths, depths2
-
-img = cv2.imread('hao.jpg', cv2.IMREAD_GRAYSCALE)
-
-# gets the area of interest
-filtered = filter_(img)
-# fix I found on stack overflow:
 
 
-z = zhangsuen(filtered)
-#import pdb; pdb.set_trace()
-
-
-plt.subplot(2, 2, 3)
-plt.title('cropped_img')
-plt.imshow(z, cmap='gray')
-
-plt.show()
-
+# does all of the processing
 for name in names:
 	img = cv2.imread(name, cv2.IMREAD_GRAYSCALE)
 	img_copy = img.copy()
@@ -175,6 +135,7 @@ for name in names:
 	# now process the cropped_img
 	t0 = time.time()
 	z = zhangsuen(cropped_img)
+	cv2.imwrite('{}_out.png'.format(name[:-4]), z)
 	print time.time() - t0
 	#import pdb; pdb.set_trace()
 
@@ -197,5 +158,5 @@ for name in names:
 	plt.title('cropped_img')
 	plt.imshow(z, cmap='gray')
 
-	plt.show()
+	#plt.show()
 
