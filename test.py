@@ -31,13 +31,22 @@ for name in names:
 	longest_2 = zip(*cont_per[0:2])[0]
 	rects = map(lambda x: cv2.boundingRect(x), longest_2)
 
+	# finds rectangle bounding maze
+	DELTA = 5
+	min_x0, min_y0, max_x0, max_y0 =\
+		rects[0][0], rects[0][1], rects[0][0] + rects[0][2], rects[0][1] + rects[0][3]
+	min_x1, min_y1, max_x1, max_y1 =\
+		rects[1][0], rects[1][1], rects[1][0] + rects[1][2], rects[1][1] + rects[1][3]
+	min_x = min(min_x0, min_x1) - DELTA
+	min_y = min(min_y0, min_y1) - DELTA
+	max_x = max(max_x0, max_x1) + DELTA
+	max_y = max(max_y0, max_y1) + DELTA
+
+	cropped_img = filtered[min_y: max_y, min_x: max_x]
+
 	# draws bounding boxes around rectangles
 	filtered_copy = filtered.copy()
-	for rect in rects:
-		x,y,w,h = rect
-		print x,y,w+x,h+y
-
-		cv2.rectangle(filtered_copy,(x,y),(x+w,y+h),0,1)
+	cv2.rectangle(filtered_copy,(min_x,min_y),(max_x,max_y),0,1)
 
 	#filtered_copy = filtered.copy()
 
@@ -50,6 +59,9 @@ for name in names:
 	plt.subplot(2, 2, 2)
 	plt.title('with rectangle')
 	plt.imshow(filtered, cmap='gray')
+	plt.subplot(2, 2, 3)
+	plt.title('cropped_img')
+	plt.imshow(cropped_img, cmap='gray')
 
 	plt.show()
 
