@@ -3,12 +3,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 import copy
-<<<<<<< HEAD
 import time
-=======
-from scipy import weave
-import sys
->>>>>>> f942dbb7c7cdefe882b0a29edc0096107340f355
 
 
 names = ['0', '1.jpg', '2.jpg', '3.png', '4.jpg', '5.png']
@@ -21,7 +16,7 @@ def filter_(img):
 	# Otsu's thresholding
 	ret,th = cv2.threshold(img,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 	kernel = np.ones((3,3), np.float32)/9
-	th = cv2.filter2D(th, -1, kernel)
+	th3 = cv2.filter2D(img, -1, kernel)
 	return th
 '''
 # does the A thing
@@ -115,7 +110,6 @@ def zhangsuen(img):
 			p8 = img[row, col-1]
 			p9 = img[row-1, col-1]
 
-<<<<<<< HEAD
 			#import pdb; pdb.set_trace()
 			blackPix = map(lambda x: x != 0, [p2, p3, p4, p5, p6, p7, p8, p9])
 			blackNum = sum([1 if b else 0 for b in blackPix])
@@ -152,41 +146,6 @@ def zhangsuen(img):
 
 
 for name in names[:1]:
-=======
-def zhangsuen(img):
-	#pseudocode: http://rosettacode.org/wiki/Zhang-Suen_thinning_algorithm
-	shape = img.shape
-	step = 1;
-	changed = True
-	while(changed):
-		changed = False
-		for row in range(1, shape[0] - 1):
-			for col in range(1, shape[1] - 1):
-				isBlack = (img[row,col] == 0)
-				numTransitions = (img[row - 1, col - 1] == 255 or img[row - 1, col] == 255) + \
-					(img[row - 1, col] == 255 or img[row - 1, col + 1] == 255) + \
-					(img[row - 1, col + 1] == 255 or img[row, col + 1] == 255) + \
-					(img[row, col + 1] == 255 or img[row + 1, col + 1] == 255) + \
-					(img[row + 1, col + 1] == 255 or img[row + 1, col] == 255) + \
-					(img[row + 1, col] == 255 or img[row + 1, col - 1] == 255) + \
-					(img[row + 1, col - 1] == 255 or img[row, col - 1] == 255) + \
-					(img[row, col - 1] == 255 or img[row - 1, col - 1] == 255)
-				numBlackNeighbors = (img[row - 1, col - 1] == 0) + (img[row - 1, col] == 0) + (img[row - 1, col + 1] == 0) + (img[row, col - 1] == 0) + (img[row, col + 1] == 0) + (img[row + 1, col - 1] == 0) + (img[row + 1, col] == 0) + (img[row + 1, col + 1] == 0)
-				if(step == 1):
-					fuckThis = (img[row - 1, col] == 255 or img[row, col + 1] == 255 or img[row + 1, col] == 255)
-					fuckThis2 = (img[row, col - 1] == 255 or img[row, col + 1] == 255 or img[row + 1, col] == 255)
-					step = 2
-				elif(step == 2):
-					fuckThis = (img[row - 1, col] == 255 or img[row, col + 1] == 255 or img[row, col - 1] == 255)
-					fuckThis2 = (img[row, col - 1] == 255 or img[row - 1, col] == 255 or img[row + 1, col] == 255)
-					step = 1
-				if(isBlack and numBlackNeighbors >= 2 and numBlackNeighbors <= 6 and numTransitions == 1 and fuckThis and fuckThis2):
-					img[row,col] == 255
-					changed = True
-	return img
-
-for name in names:
->>>>>>> f942dbb7c7cdefe882b0a29edc0096107340f355
 	img = cv2.imread(name, cv2.IMREAD_GRAYSCALE)
 	img_copy = img.copy()
 
@@ -227,37 +186,18 @@ for name in names:
 
 	#filtered_copy = filtered.copy()
 
-	zhang_suen = zhangsuen(cropped_img.copy())
-
-
-	plt.subplot(2, 3, 0)
+	plt.subplot(2, 2, 0)
 	plt.title('original')
 	plt.imshow(img, cmap='gray')
-<<<<<<< HEAD
 	plt.subplot(2, 2, 1)
 	plt.title('with rectangle')
 	plt.imshow(filtered_copy, cmap='gray')
 	plt.subplot(2, 2, 2)
 	plt.title('filtered')
-=======
-	plt.subplot(2, 3, 1)
-	plt.title('filtered')
-	plt.imshow(filtered_copy, cmap='gray')
-	plt.subplot(2, 3, 2)
-	plt.title('with rectangle')
->>>>>>> f942dbb7c7cdefe882b0a29edc0096107340f355
 	plt.imshow(filtered, cmap='gray')
-	plt.subplot(2, 3, 3)
+	plt.subplot(2, 2, 3)
 	plt.title('cropped_img')
-<<<<<<< HEAD
 	plt.imshow(z, cmap='gray')
 
-=======
-	plt.imshow(cropped_img, cmap='gray')
-	plt.subplot(2, 3, 4)
-	plt.title('zhang suen')
-	plt.imshow(zhang_suen, cmap='gray')
->>>>>>> f942dbb7c7cdefe882b0a29edc0096107340f355
 	plt.show()
-	print(cropped_img)
 
