@@ -89,7 +89,7 @@ class ImageSolver():
 								new_pix[1] < 0 or new_pix[1] >= self.width:
 							continue
 						# else not found before
-						elif new_pix not in closed_set:
+						elif new_pix not in closed_set and self.img[new_pix[0],new_pix[1]]:
 							closed_set.add(new_pix)
 							# found next junction
 							if self.img[new_pix[0], new_pix[1]] >= 3:
@@ -102,7 +102,18 @@ class ImageSolver():
 
 		print len(self.POI)
 
+	def highlightPOIs(self,img):
+		clone = img.copy()
+		for point in self.POI:
+			cv2.circle(clone, (point[1], point[0]), 6, (255,0,0), 3)
+		return clone
 
+	def highlightPaths(self,img):
+		clone = img.copy()
+		for key in self.paths.keys():
+			for pixel in self.paths[key]:
+				img[pixel] = [0,255,0]
+		return clone
 
 t0 = time.time()
 name = 'noisy_images/noise0_out.png'
