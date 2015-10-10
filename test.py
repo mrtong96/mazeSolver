@@ -18,59 +18,8 @@ def filter_(img):
 	kernel = np.ones((3,3), np.float32)/9
 	th3 = cv2.filter2D(img, -1, kernel)
 	return th
-'''
-# does the A thing
-def get_image_set(img):
-	zeros = []
-	width = img[0].size
-	height = img.size / width
-	for y in range(height):
-		for x in range(width):
-			if img[y][x] == 0:
-				zeros.append((x,y))
 
-	A = np.zeros((height, width), dtype=np.uint8)
 
-	ERR = .000001 # for robustness against FLOP errors
-	for i, z0 in enumerate(zeros):
-		print i, len(zeros)
-		for z1 in zeros[i:]:
-			x0, y0 = z0
-			x1, y1 = z1
-
-			if x1 - x0:
-				m = 1.0 * (y1 - y0) / (x1 - x0)
-				# checks y intersections
-				for i in range(1, x1 - x0):
-					x_coords = [x0 + i - 1, x0 + i]
-					y_res = 1.0 * i * m + y0
-					y_coords = [int(y_res)]
-					if abs(y_res - int(y_res)) < ERR:
-						if y_res > int(y_res):
-							y_coords.append(int(y_res) + 1)
-						else:
-							y_coords.append(int(y_res) - 1)
-					for x in x_coords:
-						for y in y_coords:
-							A[y][x] |= 0xFF
-
-			if y1 - y0:
-				m_t = 1.0 * (x1 - x0) / (y1 - y0)
-				# checks x intersections
-				for i in range(1, y1 - y0):
-					y_coords = [y0 + i - 1, y0 + i]
-					x_res = 1.0 * i * m_t + x0
-					x_coords = [int(x_res)]
-					if abs(x_res - int(x_res)) < ERR:
-						if x_res > int(x_res):
-							x_coords.append(int(x_res) + 1)
-						else:
-							x_coords.append(int(x_res) - 1)
-					for x in x_coords:
-						for y in y_coords:
-							A[y][x] |= 0xFF
-	return A
-'''
 
 def zhangsuen(img):
 	#pseudocode: http://rosettacode.org/wiki/Zhang-Suen_thinning_algorithm
@@ -85,13 +34,14 @@ def zhangsuen(img):
 			check_pixels.add((row, col))
 
 	while len(check_pixels) > 0:
+		selected_pixels = set()
 		if step == 1:
 			new_pixels = set()
 
-		order = list(check_pixels)
-		order.sort(key=lambda x: x[0])
-		order.sort(key=lambda x: x[1])
-		for pixel in order:
+#		order = list(check_pixels)
+#		order.sort(key=lambda x: x[1])
+#		order.sort(key=lambda x: x[0])
+		for pixel in check_pixels:
 			row, col = pixel
 
 			if row < 1 or row > shape[0] - 2:
@@ -129,15 +79,20 @@ def zhangsuen(img):
 
 			if (step == 1 and (p4== 0 or p6==0 or (p2==0 and p8==0)))\
 				or (step == 0 and (p2 == 0 or p8 == 0 or (p4==0 and p6==0))):
-				img[row, col] = 0
-				new_pixels.add((row-1, col))
-				new_pixels.add((row-1, col+1))
-				new_pixels.add((row, col+1))
-				new_pixels.add((row+1, col+1))
-				new_pixels.add((row+1, col))
-				new_pixels.add((row+1, col-1))
-				new_pixels.add((row, col-1))
-				new_pixels.add((row-1, col-1))
+				selected_pixels.add((row, col))
+				
+
+		for pixel in selected_pixels:
+			row, col = pixel
+			img[row, col] = 0
+			new_pixels.add((row-1, col))
+			new_pixels.add((row-1, col+1))
+			new_pixels.add((row, col+1))
+			new_pixels.add((row+1, col+1))
+			new_pixels.add((row+1, col))
+			new_pixels.add((row+1, col-1))
+			new_pixels.add((row, col-1))
+			new_pixels.add((row-1, col-1))
 
 		step = (step + 1) % 2
 
@@ -172,6 +127,22 @@ def find_ends(img):
 
 	return depths, depths2
 
+img = cv2.imread('hao.jpg', cv2.IMREAD_GRAYSCALE)
+
+# gets the area of interest
+filtered = filter_(img)
+# fix I found on stack overflow:
+
+
+z = zhangsuen(filtered)
+#import pdb; pdb.set_trace()
+
+
+plt.subplot(2, 2, 3)
+plt.title('cropped_img')
+plt.imshow(z, cmap='gray')
+
+plt.show()
 
 for name in names:
 	img = cv2.imread(name, cv2.IMREAD_GRAYSCALE)
