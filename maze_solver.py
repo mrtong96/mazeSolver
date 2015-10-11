@@ -7,15 +7,19 @@ from pathing import ImageSolver
 from image_processing import filter_, zhangsuen
 
 def main():
-    names = ['0.png', '1.png']
-    names = ['additional_samples/{}'.format(name) for name in names]
-    #names = ['noisy_images/noise{}.png'.format(i) for i in range(6)]
+    names = ['noisy_images/noise{}.png'.format(i) for i in range(5)]
 
     for name in names:
+        print 'processing image: {}'.format(name)
         t0 = time.time()
 
         img = cv2.imread(name, cv2.IMREAD_GRAYSCALE)
+        smallest_dim = min(img.shape)
+        scale = 720.0 / smallest_dim
+        img = cv2.resize(img, (0,0), fx=scale, fy=scale)
         img_copy = img.copy()
+
+        print 'resizing time: {}'.format(time.time() - t0)
 
         # gets the area of interest
         filtered = filter_(img)
@@ -44,8 +48,16 @@ def main():
 
         cropped_img = filtered[min_y: max_y, min_x: max_x]
 
+        print 'find contours and crop: {}'.format(time.time() - t0)
+
+        if cropped_img.size == 0:
+            print 'error: no maze found'
+            continue
+
         # now process the cropped_img
         z = zhangsuen(cropped_img.copy())
+
+        print 'zs alg: {}'.format(time.time() - t0)
 
         # draws bounding boxes around rectangles
         filtered_copy = filtered.copy()
@@ -54,14 +66,19 @@ def main():
         i = ImageSolver(z)
         y = cv2.cvtColor(z, cv2.COLOR_GRAY2RGB)
         y = i.highlightPOIs(y)
-        i.identifyEnds();
-        a = i.find_route(i.ends[0], i.ends[1])
-        for pixel in a:
-            y[pixel] = [0,255,0]
 
-        pixels = map(lambda x: (min_x + x[1], min_y + x[0]), a)
-        for pixel in pixels:
-            cv2.circle(img, pixel, 5, [0, 255, 0])
+        print 'initialize solver: {}'.format(time.time() - t0)
+
+        a = i.solveMaze()
+        if a:
+            for pixel in a:
+                y[pixel] = [0,255,0]
+
+            pixels = map(lambda x: (min_x + x[1], min_y + x[0]), a)
+            for pixel in pixels:
+                cv2.circle(img, pixel, 5, [0, 255, 0])
+
+        print 'solve maze: {}'.format(time.time() - t0)
 
         # display stuff
         plt.subplot(2, 2, 1)
@@ -77,7 +94,8 @@ def main():
         plt.title('final result')
         plt.imshow(img, cmap='gray')
 
-        print time.time() - t0
+        # show time for sanity checks
+        print 'total time: {}'.format(time.time() - t0)
         plt.show()
 
 if __name__ == '__main__':
