@@ -102,10 +102,9 @@ def zhangsuen(input_):
 
 	return img
 
+for name in names[2:]:
+	t0 = time.time()
 
-"""
-# does all of the processing
-for name in names:
 	img = cv2.imread(name, cv2.IMREAD_GRAYSCALE)
 	img_copy = img.copy()
 
@@ -131,79 +130,45 @@ for name in names:
 	max_x = max(max_x0, max_x1) + DELTA
 	max_y = max(max_y0, max_y1) + DELTA
 
+	filtered_copy = filtered.copy()
+	cv2.rectangle(filtered_copy,(min_x,min_y),(max_x,max_y),0,1)
+
 	cropped_img = filtered[min_y: max_y, min_x: max_x]
 
 	# now process the cropped_img
-	t0 = time.time()
-	z = zhangsuen(cropped_img)
-	cv2.imwrite('{}_out.png'.format(name[:-4]), z)
-	print time.time() - t0
+	z = zhangsuen(cropped_img.copy())
 	#import pdb; pdb.set_trace()
 
 	# draws bounding boxes around rectangles
 	filtered_copy = filtered.copy()
 	cv2.rectangle(filtered_copy,(min_x,min_y),(max_x,max_y),0,1)
 
-	#filtered_copy = filtered.copy()
+	i = ImageSolver(z)
+	y = cv2.cvtColor(z, cv2.COLOR_GRAY2RGB)
+	y = i.highlightPOIs(y)
+	i.identifyEnds();
+	a = i.find_route(i.ends[0], i.ends[1])
+	for pixel in a:
+		y[pixel] = [0,255,0]
 
-	plt.subplot(2, 2, 0)
-	plt.title('original')
-	plt.imshow(img, cmap='gray')
+	pixels = map(lambda x: (min_x + x[1], min_y + x[0]), a)
+	for pixel in pixels:
+		cv2.circle(img, pixel, 5, [0, 255, 0])
+
+
+	# display stuff
 	plt.subplot(2, 2, 1)
-	plt.title('with rectangle')
-	plt.imshow(filtered_copy, cmap='gray')
+	plt.title('original image')
+	plt.imshow(img_copy, cmap='gray')
 	plt.subplot(2, 2, 2)
-	plt.title('filtered')
-	plt.imshow(filtered, cmap='gray')
+	plt.title('filtered image')
+	plt.imshow(filtered_copy, cmap='gray')
 	plt.subplot(2, 2, 3)
-	plt.title('cropped_img')
+	plt.title('processed image')
 	plt.imshow(z, cmap='gray')
+	plt.subplot(2, 2, 0)
+	plt.title('final result')
+	plt.imshow(img, cmap='gray')
 
-	#plt.show()
-
-"""
-
-img = cv2.imread(names[0], cv2.IMREAD_GRAYSCALE)
-img_copy = img.copy()
-
-# gets the area of interest
-filtered = filter_(img)
-# fix I found on stack overflow:
-# http://stackoverflow.com/questions/20743850/python-opencv-error-finding-contours
-ret,thresh = cv2.threshold(filtered.copy(),127,255,cv2.THRESH_BINARY_INV)
-contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cont_per = map(lambda x: (x, cv2.arcLength(x, True)), contours)
-cont_per.sort(key=lambda x: -x[1])
-longest_2 = zip(*cont_per[0:2])[0]
-rects = map(lambda x: cv2.boundingRect(x), longest_2)
-
-# finds rectangle bounding maze
-DELTA = 5
-min_x0, min_y0, max_x0, max_y0 =\
-	rects[0][0], rects[0][1], rects[0][0] + rects[0][2], rects[0][1] + rects[0][3]
-min_x1, min_y1, max_x1, max_y1 =\
-	rects[1][0], rects[1][1], rects[1][0] + rects[1][2], rects[1][1] + rects[1][3]
-min_x = min(min_x0, min_x1) - DELTA
-min_y = min(min_y0, min_y1) - DELTA
-max_x = max(max_x0, max_x1) + DELTA
-max_y = max(max_y0, max_y1) + DELTA
-
-cropped_img = filtered[min_y: max_y, min_x: max_x]
-
-# now process the cropped_img
-z = zhangsuen(cropped_img)
-#import pdb; pdb.set_trace()
-
-# draws bounding boxes around rectangles
-filtered_copy = filtered.copy()
-cv2.rectangle(filtered_copy,(min_x,min_y),(max_x,max_y),0,1)
-
-i = ImageSolver(z)
-#y = cv2.cvtColor(z, cv2.COLOR_GRAY2RGB)
-#y = i.highlightPOIs(y)
-i.identifyEnds();
-a = i.find_route(i.ends[0], i.ends[1])
-for pixel in a:
-	cv2.circle(cropped_img, (pixel[1], pixel[0]), 2, (0,255,0), 2)
-plt.imshow(cropped_img)
-plt.show()
+	print time.time() - t0
+	plt.show()
