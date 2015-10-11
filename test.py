@@ -196,10 +196,15 @@ z = zhangsuen(cropped_img)
 # draws bounding boxes around rectangles
 filtered_copy = filtered.copy()
 cv2.rectangle(filtered_copy,(min_x,min_y),(max_x,max_y),0,1)
+
 i = ImageSolver(z)
 y = cv2.cvtColor(z, cv2.COLOR_GRAY2RGB)
-i.highlightPOIs(y)
-i.highlightPaths(y)
+y = i.highlightPOIs(y)
+#y = i.highlightPaths(y)
+i.find_route((171,639), (284,654))
 plt.imshow(y)
+import pdb; pdb.set_trace()
 plt.show()
+for i in range(1000000):
+	pass
 #filtered_copy = filtered.copy()
