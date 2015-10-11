@@ -1,5 +1,7 @@
 # mazeSolver
 
+http://mazes.herokuapp.com/
+
 ### Overview ###
 *   This program takes in image files then searches for and solves mazes on those images.
 *   Uses opencv (python version) for the image processing and node.js for the front end.
@@ -22,5 +24,7 @@
 
 *   Michael Tong: mrtong96@berkeley.edu
 *   Eric Zhou: eric.zhou.us@gmail.com
+*   Vy Ly: vyaly@berkeley.edu
+
 
 
