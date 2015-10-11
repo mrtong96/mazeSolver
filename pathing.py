@@ -112,21 +112,13 @@ class ImageSolver():
 		clone = img.copy()
 		for key in self.paths.keys():
 			for pixel in self.paths[key]:
-				img[pixel] = [0,255,0]
+				clone[pixel] = [0,255,0]
 		return clone
 
-t0 = time.time()
-name = 'noisy_images/noise0_out.png'
-img = cv2.imread(name, cv2.IMREAD_GRAYSCALE)
-plt.subplot(1,2,0)
-plt.title('orig')
-plt.imshow(img)
-solver = ImageSolver(img)
-plt.subplot(1,2,1)
-plt.title('new')
-plt.imshow(solver.img)
-cv2.imwrite('tmp.jpg', solver.img)
-print time.time() - t0
-#plt.show()
-#import pdb; pdb.set_trace()
-
+	def identifyEnds(self,img):
+		self.ends = []
+		for poi in self.POI:
+			if poi[1] == self.width - 1 or poi[1] == 0 or poi[0] == 0 or poi[0] == self.height - 1:
+				self.ends.append(poi);
+		if len(self.ends) != 2:
+			print('Lenny for a watermelon you run into a lot more trouble than you should')
