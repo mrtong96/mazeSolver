@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
-var port = process.env.PORT || 80;
+// var port = process.env.PORT || 80;
+var port = 5050;
+
 var multer = require('multer');
 
 var storage = multer.diskStorage({

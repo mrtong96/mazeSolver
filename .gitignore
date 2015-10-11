@@ -12,3 +12,8 @@ test
 #server uploads and processing shit stuffs bleh
 uploads/*
 results/*
+
+/node_modules
+npm-debug.log
+.DS_Store
+/*.env

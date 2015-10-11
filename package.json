@@ -6,12 +6,27 @@
     "multer": "1.0.6",
     "body-parser": "*",
     "cookie-parser": "*",
-    "nodemon": "*",
-    "child_process": ""
+    "nodemon": "*"
+    
   },
   "devDependencies": {
     "should": "~7.1.0",
     "mocha": "~2.3.3",
     "supertest": "~1.1.0"
-  }
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "description": "### Overview ### *   This program takes in image files then searches for and solves mazes on those images. *   Uses opencv (python version) for the image processing and node.js for the front end.",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrtong96/mazeSolver.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrtong96/mazeSolver/issues"
+  },
+  "homepage": "https://github.com/mrtong96/mazeSolver#readme"
 }
