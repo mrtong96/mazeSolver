@@ -7,9 +7,11 @@ from pathing import ImageSolver
 from image_processing import filter_, zhangsuen
 
 def main():
-    names = ['noisy_images/noise{}.png'.format(i) for i in range(6)]
+    names = ['0.png', '1.png']
+    names = ['additional_samples/{}'.format(name) for name in names]
+    #names = ['noisy_images/noise{}.png'.format(i) for i in range(6)]
 
-    for name in names[4:]:
+    for name in names:
         t0 = time.time()
 
         img = cv2.imread(name, cv2.IMREAD_GRAYSCALE)
