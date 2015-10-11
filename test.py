@@ -21,9 +21,10 @@ def filter_(img):
 
 
 
-def zhangsuen(img):
+def zhangsuen(input_):
 	#pseudocode: http://rosettacode.org/wiki/Zhang-Suen_thinning_algorithm
 	# black = 1, white = 0
+	img = input_.copy()
 	shape = img.shape
 	step = 1;
 
@@ -198,11 +199,11 @@ filtered_copy = filtered.copy()
 cv2.rectangle(filtered_copy,(min_x,min_y),(max_x,max_y),0,1)
 
 i = ImageSolver(z)
-y = cv2.cvtColor(z, cv2.COLOR_GRAY2RGB)
-y = i.highlightPOIs(y)
+#y = cv2.cvtColor(z, cv2.COLOR_GRAY2RGB)
+#y = i.highlightPOIs(y)
 i.identifyEnds();
 a = i.find_route(i.ends[0], i.ends[1])
 for pixel in a:
-	y[pixel] = [0,255,0]
-plt.imshow(y)
+	cv2.circle(cropped_img, (pixel[1], pixel[0]), 2, (0,255,0), 2)
+plt.imshow(cropped_img)
 plt.show()
