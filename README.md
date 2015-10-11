@@ -1,6 +1,5 @@
 # mazeSolver
 
-http://mazes.herokuapp.com/
 
 ### Overview ###
 *   This program takes in image files then searches for and solves mazes on those images.
