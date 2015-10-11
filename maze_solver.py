@@ -5,6 +5,12 @@ from matplotlib import pyplot as plt
 import time
 from pathing import ImageSolver
 from image_processing import filter_, zhangsuen
+import sys, json
+
+def read_in():
+    lines = sys.stdin.readlines()
+    #Since our input would only be having one line, parse our JSON data from that
+    return json.loads(lines[0])
 
 def main():
     names = ['noisy_images/noise{}.png'.format(i) for i in range(5)]
@@ -99,7 +105,7 @@ def main():
         plt.show()
 
 if __name__ == '__main__':
-    main()
+   main()
 
 
 

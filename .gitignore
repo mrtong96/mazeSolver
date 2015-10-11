@@ -1,0 +1,8 @@
+#Node Dependencies
+node_modules
+
+#server specific stuffs
+uploads
+
+*.pyc
+
