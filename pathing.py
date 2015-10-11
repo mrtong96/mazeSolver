@@ -104,4 +104,9 @@ class ImageSolver():
         if len(self.ends) != 2:
             print('Lenny for a watermelon you run into a lot more trouble than you should')
 
+    def solveMaze(self):
+        self.identifyEnds()
+        if len(self.ends) != 2:
+            return
+        return self.find_route(*self.ends)
 
