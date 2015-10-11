@@ -5,7 +5,7 @@ var multer = require('multer');
 var multer = require('multer');
 var upload = multer({dest: 'uploads/'});
 var spawn = require('child_process').spawn;
-var py = spawn('python', ['dummy.py']);
+
 /*app.use(multer({ dest: './uploads/',
     rename: function (fieldname, filename) {
         return filename+Date.now();
@@ -22,12 +22,12 @@ var py = spawn('python', ['dummy.py']);
 //app.use('/angular', express.static(path.join(rootPath + '/angular')));
 //app.set('view engine', 'ejs');
 // pyshit ======================================================================
-py.stdout.on('data', function(data){
+/*py.stdout.on('data', function(data){
     console.log(data.toString());
 });
 
 py.stdin.write(JSON.stringify('lol'));
-py.stdin.end();
+py.stdin.end();*/
 
 // routes ======================================================================
 app.get('/',function(req,res){
@@ -35,8 +35,13 @@ app.get('/',function(req,res){
 });
 
 app.post('/api/photo', upload.single('maze'), function(req, res){
-    console.log(req.file);
-    console.log(req.files);
+    var py = spawn('python', ['maze_solver.py']);
+    py.stdout.on('data', function(data){
+        console.log(data.toString());
+    });
+
+    py.stdin.write(JSON.stringify(req.file.filename));
+    py.stdin.end();
     //console.log(req.body);
     /*upload(req,res,function(err) {
         if(err) {
