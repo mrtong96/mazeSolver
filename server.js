@@ -16,7 +16,6 @@ var upload = multer({dest: 'uploads/', storage: storage});
 var spawn = require('child_process').spawn;
 var path = require('path');
 var rootPath = path.join(__dirname);
-console.log(rootPath + '/results');
 app.use(express.static(path.join(rootPath + '/results')));
 app.use(express.static(path.join(rootPath + '/uploads')));
 

@@ -6,7 +6,6 @@ import time
 from pathing import ImageSolver
 from image_processing import filter_, zhangsuen
 import sys, json
-from ndArrayEncoder import NumpyEncoder 
 
 def read_in():
     lines = sys.stdin.readlines()
