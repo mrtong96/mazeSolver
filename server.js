@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 // var port = process.env.PORT || 80;
-var port = 5050;
+var port = process.env.PORT || 8888;
 
 var multer = require('multer');
 
