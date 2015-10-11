@@ -6,6 +6,7 @@ import time
 from pathing import ImageSolver
 from image_processing import filter_, zhangsuen
 import sys, json
+from ndArrayEncoder import NumpyEncoder 
 
 def read_in():
     lines = sys.stdin.readlines()
@@ -19,13 +20,15 @@ def main():
 #names = ['noisy_images/noise{}.png'.format(i) for i in range(6)]
 
 #for name in names:
-    name = 'uploads/'+read_in()
-    print(name)
-    t0 = time.time()
+    fileName = read_in()
+    name = 'uploads/' + fileName
+    #print(name)
+  #  t0 = time.time()
 
     img = cv2.imread(name, cv2.IMREAD_GRAYSCALE)
-    img_copy = img.copy()
-
+    img_copy = cv2.cvtColor(img.copy(), cv2.COLOR_GRAY2RGB)
+    
+    
     # gets the area of interest
     filtered = filter_(img)
     # fix I found on stack overflow:
@@ -71,7 +74,12 @@ def main():
     pixels = map(lambda x: (min_x + x[1], min_y + x[0]), a)
     for pixel in pixels:
         cv2.circle(img, pixel, 5, [0, 255, 0])
-
+    
+    finalPath = str("results/"+fileName+"_result.png")
+    cv2.imwrite(finalPath, img)
+    print(fileName+"_result.png")
+    
+    """
     # display stuff
     plt.subplot(2, 2, 1)
     plt.title('original image')
@@ -86,9 +94,8 @@ def main():
     plt.title('final result')
     plt.imshow(img, cmap='gray')
 
-    print time.time() - t0
     plt.show()
-
+    """
 if __name__ == '__main__':
    main()
 

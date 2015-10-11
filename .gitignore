@@ -6,3 +6,9 @@ uploads
 
 *.pyc
 
+#tests
+test
+
+#server uploads and processing shit stuffs bleh
+uploads/*
+results/*

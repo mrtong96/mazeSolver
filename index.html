@@ -1,8 +1,16 @@
-<form id        =  "uploadForm"
-     enctype   =  "multipart/form-data"
-     action    =  "/api/photo"
-     method    =  "post"
->
-<input type="file" name="maze" />
-<input type="submit" value="Upload Image" name="submit">
-</form>
+
+
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>MazeSolver</title> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+		<form id = "uploadForm" enctype = "multipart/form-data" action = "/api/maze" method = "post">
+			<input type="file" name="maze" />
+			<input id = "submit-maze" type="submit" value="Upload Image" name="submit">
+		</form>
+	</body>
+</html>

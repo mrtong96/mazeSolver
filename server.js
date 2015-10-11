@@ -1,10 +1,24 @@
 var express = require('express');
 var app = express();
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 80;
 var multer = require('multer');
-var multer = require('multer');
-var upload = multer({dest: 'uploads/'});
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + Date.now()+".png");
+  }
+})
+
+var upload = multer({dest: 'uploads/', storage: storage});
 var spawn = require('child_process').spawn;
+var path = require('path');
+var rootPath = path.join(__dirname);
+console.log(rootPath + '/results');
+app.use(express.static(path.join(rootPath + '/results')));
+app.use(express.static(path.join(rootPath + '/uploads')));
 
 /*app.use(multer({ dest: './uploads/',
     rename: function (fieldname, filename) {
@@ -34,22 +48,17 @@ app.get('/',function(req,res){
       res.sendFile(__dirname + "/index.html");
 });
 
-app.post('/api/photo', upload.single('maze'), function(req, res){
+app.post('/api/maze', upload.single('maze'), function(req, res){
     var py = spawn('python', ['maze_solver.py']);
+    var finalPath = "";
     py.stdout.on('data', function(data){
-        console.log(data.toString());
+        finalPath = data.toString('utf8');
     });
-
+    py.stdout.on('end', function(){
+        res.send("<img src=/" + req.file.filename + "><img src=/" + finalPath + ">");
+    });
     py.stdin.write(JSON.stringify(req.file.filename));
-    py.stdin.end();
-    //console.log(req.body);
-    /*upload(req,res,function(err) {
-        if(err) {
-            return res.end("Error uploading file.");
-        }
-        res.end("File is uploaded");
-    });*/
-	res.end("File is uploaded");
+    py.stdin.end();	
 });
 
 app.listen(port, function(){
