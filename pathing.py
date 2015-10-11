@@ -108,7 +108,7 @@ class ImageSolver():
 				clone[pixel] = [0,255,0]
 		return clone
 	'''
-	def identifyEnds(self,img):
+	def identifyEnds(self):
 		self.ends = []
 		for poi in self.POI:
 			if poi[1] == self.width - 1 or poi[1] == 0 or poi[0] == 0 or poi[0] == self.height - 1:
